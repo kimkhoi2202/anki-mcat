@@ -23,7 +23,7 @@
         "@sqltools/formatter": "^1.2.2",
         "@sveltejs/adapter-static": "^3.0.10",
         "@sveltejs/kit": "^2.60.1",
-        "@sveltejs/vite-plugin-svelte": "5.1",
+        "@sveltejs/vite-plugin-svelte": "7.1",
         "@types/bootstrap": "^5.0.12",
         "@types/codemirror": "^5.60.0",
         "@types/d3": "^7.0.0",
