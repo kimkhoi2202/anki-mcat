@@ -12,6 +12,7 @@ pub(crate) mod congrats;
 pub(crate) mod filtered;
 pub mod fsrs;
 pub mod new;
+pub mod points_at_stake;
 pub(crate) mod queue;
 mod reviews;
 mod service;
