@@ -382,6 +382,13 @@ impl crate::services::SchedulerService for Collection {
             delta_days: self.get_fuzz_delta(input.card_id.into(), input.interval)?,
         })
     }
+
+    fn get_points_at_stake_queue(
+        &mut self,
+        input: scheduler::GetPointsAtStakeQueueRequest,
+    ) -> Result<scheduler::PointsAtStakeQueue> {
+        self.points_at_stake_queue(input.into()).map(Into::into)
+    }
 }
 
 impl crate::services::BackendSchedulerService for Backend {
