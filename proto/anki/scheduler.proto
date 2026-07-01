@@ -64,12 +64,6 @@ service SchedulerService {
   // The number of days the calculated interval was fuzzed by on the previous
   // review (if any). Utilized by the FSRS add-on.
   rpc FuzzDelta(FuzzDeltaRequest) returns (FuzzDeltaResponse);
-  // Return the due *review* queue reordered by a "points at stake" score
-  // (topic_weight x student_weakness). This is a read-only ordering helper: it
-  // does not change FSRS intervals, scheduling or any stored card data. See
-  // docs/rust-change.md for the design.
-  rpc GetPointsAtStakeQueue(GetPointsAtStakeQueueRequest)
-      returns (PointsAtStakeQueue);
 }
 
 // Implicitly includes any of the above methods that are not listed in the
@@ -488,48 +482,4 @@ message FuzzDeltaRequest {
 
 message FuzzDeltaResponse {
   sint32 delta_days = 1;
-}
-
-message GetPointsAtStakeQueueRequest {
-  // Tag prefix that identifies a card's topic tag. When empty, defaults to
-  // "MCAT::". The first tag under this prefix determines the card's topic; its
-  // top component (the level immediately under the prefix) is used as the topic
-  // name. Notes without a matching tag bucket into the "untagged" topic.
-  string topic_tag_prefix = 1;
-  // Topic weighting. When false (the default), every topic weighs equally and
-  // points_at_stake == weakness, so the weakest topics are surfaced first. When
-  // true, each topic is weighted by its share of the due review queue
-  // (card_count / total_due), favouring larger weak topics.
-  bool weight_by_topic_size = 2;
-}
-
-// Read-only ordering of the due review queue by "points at stake". The backend
-// does not mutate any card when producing this; it only reads existing FSRS
-// memory state.
-message PointsAtStakeQueue {
-  message ScoredCard {
-    int64 card_id = 1;
-    string topic = 2;
-    // topic_weight x weakness (the value used for the descending sort).
-    float points_at_stake = 3;
-    // The topic's weight (1.0 when weighting is disabled).
-    float topic_weight = 4;
-    // 1 - mean FSRS retrievability of the topic.
-    float weakness = 5;
-    // This card's own FSRS retrievability, if it has memory state.
-    optional float retrievability = 6;
-  }
-  message TopicSummary {
-    string topic = 1;
-    uint32 card_count = 2;
-    float weakness = 3;
-    float topic_weight = 4;
-    // Mean FSRS retrievability across the topic's cards that have memory state.
-    optional float mean_retrievability = 5;
-  }
-  // Due review cards ordered by descending points_at_stake. Ties break by
-  // ascending card id for deterministic output.
-  repeated ScoredCard cards = 1;
-  // Per-topic aggregates, in first-seen queue order.
-  repeated TopicSummary topics = 2;
 }

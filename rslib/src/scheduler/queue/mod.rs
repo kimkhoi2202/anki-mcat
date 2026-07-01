@@ -134,20 +134,6 @@ impl Collection {
             review_count: counts.review,
         })
     }
-
-    /// Card ids of the due *review* cards in the current study queue, in queue
-    /// order. Building the queue is read-only: it does not modify any card or
-    /// create undo entries, so this is safe to call from ordering helpers such
-    /// as the points-at-stake queue.
-    pub(crate) fn due_review_card_ids(&mut self) -> Result<Vec<CardId>> {
-        let queues = self.get_queues()?;
-        Ok(queues
-            .main
-            .iter()
-            .filter(|entry| entry.kind == MainQueueEntryKind::Review)
-            .map(|entry| entry.id)
-            .collect())
-    }
 }
 
 fn new_scheduling_context(col: &mut Collection, card: &Card) -> Result<SchedulingContext> {
