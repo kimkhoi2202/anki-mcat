@@ -109,16 +109,13 @@ def run_benchmarks(bench: common.BenchCollection, iters: int, heavy_iters: int) 
         f"live_review_queue={review_count}\n"
     )
 
-    # 1. Deck tree with counts (whole-collection).
     results.add("deck tree with counts", measure(sched.deck_due_tree, heavy_iters))
 
-    # 2. Get queued cards (next card + remaining counts).
     results.add(
         "get queued cards",
         measure(lambda: sched.get_queued_cards(fetch_limit=1), iters),
     )
 
-    # 3. Points-at-stake query (PRD 7a) over the whole due review queue.
     results.add(
         "points-at-stake query",
         measure(
@@ -129,7 +126,6 @@ def run_benchmarks(bench: common.BenchCollection, iters: int, heavy_iters: int) 
         ),
     )
 
-    # 4. find_cards / search variants.
     all_ids = col.find_cards(f"deck:{common.DECK_NAME}")
     results.add(
         f"find_cards: deck:{common.DECK_NAME} ({len(all_ids)})",
@@ -148,7 +144,7 @@ def run_benchmarks(bench: common.BenchCollection, iters: int, heavy_iters: int) 
         measure(lambda: col.find_cards(f"deck:{common.DECK_NAME} is:due"), iters),
     )
 
-    # 5. Render card (template render incl. note fetch), on distinct cards.
+    # Render on distinct cards (template render incl. note fetch).
     render_ids = list(all_ids[: iters + 2])
     render_cards = [col.get_card(cid) for cid in render_ids]
     render_samples: list[float] = []
@@ -158,7 +154,7 @@ def run_benchmarks(bench: common.BenchCollection, iters: int, heavy_iters: int) 
             render_samples.append(sample)
     results.add("render card", render_samples)
 
-    # 6. Answer card (MUTATING — runs last). The v3 scheduler only answers the
+    # Answer card (MUTATING — runs last). The v3 scheduler only answers the
     # card at the top of the queue, so we fetch the next card (untimed) and time
     # only the answer itself. Answering reschedules the card out of today's
     # queue, so each iteration answers a distinct card.

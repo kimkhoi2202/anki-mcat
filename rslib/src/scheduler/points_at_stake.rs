@@ -34,12 +34,9 @@ use fsrs::FSRS;
 
 use crate::prelude::*;
 
-/// Default tag prefix identifying a card's topic tag.
 pub const DEFAULT_TOPIC_TAG_PREFIX: &str = "MCAT::";
-/// Topic name used for cards whose note has no tag under the configured prefix.
 pub const UNTAGGED_TOPIC: &str = "untagged";
 
-/// Options controlling how the points-at-stake queue is built.
 #[derive(Debug, Clone)]
 pub struct PointsAtStakeRequest {
     /// Tag prefix identifying topic tags (e.g. `MCAT::`).
@@ -58,7 +55,6 @@ impl Default for PointsAtStakeRequest {
     }
 }
 
-/// A single due review card with its computed points-at-stake score.
 #[derive(Debug, Clone, PartialEq)]
 pub struct ScoredCard {
     pub card_id: CardId,
@@ -82,7 +78,6 @@ pub struct TopicSummary {
     pub mean_retrievability: Option<f32>,
 }
 
-/// The ordered due review queue plus per-topic aggregates.
 #[derive(Debug, Clone, Default, PartialEq)]
 pub struct PointsAtStakeQueue {
     /// Due review cards ordered by descending points-at-stake (ties break by
@@ -92,7 +87,6 @@ pub struct PointsAtStakeQueue {
     pub topics: Vec<TopicSummary>,
 }
 
-/// Intermediate per-card data gathered before aggregation.
 struct CardTopic {
     card_id: CardId,
     topic: String,
@@ -266,10 +260,6 @@ fn strip_prefix_ci<'a>(tag: &'a str, prefix: &str) -> Option<&'a str> {
     }
 }
 
-// ----------------------------------------------------------------------------
-// Protobuf conversions
-// ----------------------------------------------------------------------------
-
 impl From<anki_proto::scheduler::GetPointsAtStakeQueueRequest> for PointsAtStakeRequest {
     fn from(req: anki_proto::scheduler::GetPointsAtStakeQueueRequest) -> Self {
         let topic_tag_prefix = if req.topic_tag_prefix.trim().is_empty() {
@@ -436,7 +426,6 @@ mod tests {
         let tagged = add_due_review_card(&mut col, &["MCAT::Physiology"], 1.0);
         // A tag that exists but isn't under the prefix.
         let other_prefix = add_due_review_card(&mut col, &["other::tag"], 1.0);
-        // No tags at all.
         let no_tags = add_due_review_card(&mut col, &[], 1.0);
 
         let out = col
@@ -494,7 +483,6 @@ mod tests {
             .unwrap();
 
         let after = col.storage.get_card(cid).unwrap().unwrap();
-        // A read-only ordering must not touch any scheduling field.
         assert_eq!(before.interval, after.interval, "interval must be unchanged");
         assert_eq!(before.due, after.due, "due must be unchanged");
         assert_eq!(before.ctype, after.ctype);
@@ -507,7 +495,6 @@ mod tests {
             before.memory_state, after.memory_state,
             "FSRS memory state must be unchanged"
         );
-        // The whole card must be byte-for-byte identical.
         assert_eq!(before, after, "the card must be completely unchanged");
     }
 
@@ -536,7 +523,6 @@ mod tests {
             .points_at_stake_queue(PointsAtStakeRequest::default())
             .unwrap();
 
-        // Undo must still succeed and fully restore the card.
         col.undo().unwrap();
         let restored = col.storage.get_card(cid).unwrap().unwrap();
         assert_eq!(
