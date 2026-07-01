@@ -11,7 +11,7 @@ description = "Anki's Rust library code"
 
 [features]
 bench = ["criterion"]
-rustls = ["reqwest/rustls-tls", "reqwest/rustls-tls-native-roots"]
+rustls = ["reqwest/rustls-tls", "reqwest/rustls-tls-webpki-roots"]
 native-tls = ["reqwest/native-tls"]
 
 [[bench]]
