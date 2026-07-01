@@ -177,7 +177,17 @@ impl Backend {
         let mut web_client = self.web_client.lock().unwrap();
 
         web_client
-            .get_or_insert_with(|| Client::builder().http1_only().build().unwrap())
+            .get_or_insert_with(|| {
+                let builder = Client::builder().http1_only();
+                // On iOS the default native-tls (Security.framework) backend links
+                // but gives reqwest no working HTTPS transport, so requests fail
+                // with "invalid URL, scheme is not http". When built with the
+                // `rustls` feature (the iOS FFI does), force the pure-Rust rustls
+                // backend with bundled roots, which works on device and Simulator.
+                #[cfg(feature = "rustls")]
+                let builder = builder.use_rustls_tls();
+                builder.build().unwrap()
+            })
             .clone()
     }
 
