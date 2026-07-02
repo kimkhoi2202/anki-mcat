@@ -1454,6 +1454,12 @@ title="{}" {}>{}</button>""".format(
         m.menuTools.addAction(self.action_mcat_readiness)
         qconnect(self.action_mcat_readiness.triggered, self.on_mcat_readiness)
 
+        # MCAT Speedrun Library (browse + import curated decks)
+        self.action_mcat_library = QAction("MCAT Library...", self)
+        self.action_mcat_library.setMenuRole(QAction.MenuRole.NoRole)
+        m.menuTools.addAction(self.action_mcat_library)
+        qconnect(self.action_mcat_library.triggered, self.on_mcat_library)
+
         # View
         qconnect(
             m.actionZoomIn.triggered,
@@ -1507,6 +1513,11 @@ title="{}" {}>{}</button>""".format(
         import aqt.mcat_readiness
 
         aqt.mcat_readiness.show(self)
+
+    def on_mcat_library(self) -> None:
+        import aqt.mcat_library
+
+        aqt.mcat_library.show(self)
 
     def hide_menubar(self) -> None:
         self.form.menubar.setFixedHeight(0)
