@@ -1448,6 +1448,12 @@ title="{}" {}>{}</button>""".format(
         qconnect(m.action_check_for_updates.triggered, self.on_check_for_updates)
         qconnect(m.actionPreferences.triggered, self.onPrefs)
 
+        # MCAT readiness (desktop memory score)
+        self.action_mcat_readiness = QAction("MCAT Readiness...", self)
+        self.action_mcat_readiness.setMenuRole(QAction.MenuRole.NoRole)
+        m.menuTools.addAction(self.action_mcat_readiness)
+        qconnect(self.action_mcat_readiness.triggered, self.on_mcat_readiness)
+
         # View
         qconnect(
             m.actionZoomIn.triggered,
@@ -1496,6 +1502,11 @@ title="{}" {}>{}</button>""".format(
         # Update Toolbar states
         self.toolbarWeb.hide_if_allowed()
         self.bottomWeb.hide_if_allowed()
+
+    def on_mcat_readiness(self) -> None:
+        import aqt.mcat_readiness
+
+        aqt.mcat_readiness.show(self)
 
     def hide_menubar(self) -> None:
         self.form.menubar.setFixedHeight(0)
