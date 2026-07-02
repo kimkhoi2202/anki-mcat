@@ -1454,6 +1454,18 @@ title="{}" {}>{}</button>""".format(
         m.menuTools.addAction(self.action_mcat_readiness)
         qconnect(self.action_mcat_readiness.triggered, self.on_mcat_readiness)
 
+        # MCAT coverage map
+        self.action_mcat_coverage = QAction("MCAT Coverage...", self)
+        self.action_mcat_coverage.setMenuRole(QAction.MenuRole.NoRole)
+        m.menuTools.addAction(self.action_mcat_coverage)
+        qconnect(self.action_mcat_coverage.triggered, self.on_mcat_coverage)
+
+        # MCAT Focus Weak Topics (points-at-stake read-out)
+        self.action_mcat_weak = QAction("Focus Weak Topics...", self)
+        self.action_mcat_weak.setMenuRole(QAction.MenuRole.NoRole)
+        m.menuTools.addAction(self.action_mcat_weak)
+        qconnect(self.action_mcat_weak.triggered, self.on_mcat_weak_topics)
+
         # MCAT Speedrun Library (browse + import curated decks)
         self.action_mcat_library = QAction("MCAT Library...", self)
         self.action_mcat_library.setMenuRole(QAction.MenuRole.NoRole)
@@ -1518,6 +1530,16 @@ title="{}" {}>{}</button>""".format(
         import aqt.mcat_library
 
         aqt.mcat_library.show(self)
+
+    def on_mcat_coverage(self) -> None:
+        import aqt.mcat_coverage
+
+        aqt.mcat_coverage.show(self)
+
+    def on_mcat_weak_topics(self) -> None:
+        import aqt.mcat_weak_topics
+
+        aqt.mcat_weak_topics.show(self)
 
     def hide_menubar(self) -> None:
         self.form.menubar.setFixedHeight(0)
