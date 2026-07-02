@@ -1448,6 +1448,33 @@ title="{}" {}>{}</button>""".format(
         qconnect(m.action_check_for_updates.triggered, self.on_check_for_updates)
         qconnect(m.actionPreferences.triggered, self.onPrefs)
 
+        # MCAT tools — grouped under one hover-expandable submenu, so the four
+        # features live together instead of cluttering the top level of Tools.
+        self.menu_mcat = QMenu("MCAT", self)
+        m.menuTools.addMenu(self.menu_mcat)
+
+        self.action_mcat_readiness = QAction("Readiness...", self)
+        self.action_mcat_readiness.setMenuRole(QAction.MenuRole.NoRole)
+        self.menu_mcat.addAction(self.action_mcat_readiness)
+        qconnect(self.action_mcat_readiness.triggered, self.on_mcat_readiness)
+
+        self.action_mcat_coverage = QAction("Coverage...", self)
+        self.action_mcat_coverage.setMenuRole(QAction.MenuRole.NoRole)
+        self.menu_mcat.addAction(self.action_mcat_coverage)
+        qconnect(self.action_mcat_coverage.triggered, self.on_mcat_coverage)
+
+        self.action_mcat_weak = QAction("Focus Weak Topics...", self)
+        self.action_mcat_weak.setMenuRole(QAction.MenuRole.NoRole)
+        self.menu_mcat.addAction(self.action_mcat_weak)
+        qconnect(self.action_mcat_weak.triggered, self.on_mcat_weak_topics)
+
+        self.menu_mcat.addSeparator()
+
+        self.action_mcat_library = QAction("Library...", self)
+        self.action_mcat_library.setMenuRole(QAction.MenuRole.NoRole)
+        self.menu_mcat.addAction(self.action_mcat_library)
+        qconnect(self.action_mcat_library.triggered, self.on_mcat_library)
+
         # View
         qconnect(
             m.actionZoomIn.triggered,
@@ -1496,6 +1523,26 @@ title="{}" {}>{}</button>""".format(
         # Update Toolbar states
         self.toolbarWeb.hide_if_allowed()
         self.bottomWeb.hide_if_allowed()
+
+    def on_mcat_readiness(self) -> None:
+        import aqt.mcat_readiness
+
+        aqt.mcat_readiness.show(self)
+
+    def on_mcat_library(self) -> None:
+        import aqt.mcat_library
+
+        aqt.mcat_library.show(self)
+
+    def on_mcat_coverage(self) -> None:
+        import aqt.mcat_coverage
+
+        aqt.mcat_coverage.show(self)
+
+    def on_mcat_weak_topics(self) -> None:
+        import aqt.mcat_weak_topics
+
+        aqt.mcat_weak_topics.show(self)
 
     def hide_menubar(self) -> None:
         self.form.menubar.setFixedHeight(0)
