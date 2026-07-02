@@ -1448,28 +1448,31 @@ title="{}" {}>{}</button>""".format(
         qconnect(m.action_check_for_updates.triggered, self.on_check_for_updates)
         qconnect(m.actionPreferences.triggered, self.onPrefs)
 
-        # MCAT readiness (desktop memory score)
-        self.action_mcat_readiness = QAction("MCAT Readiness...", self)
+        # MCAT tools — grouped under one hover-expandable submenu, so the four
+        # features live together instead of cluttering the top level of Tools.
+        self.menu_mcat = QMenu("MCAT", self)
+        m.menuTools.addMenu(self.menu_mcat)
+
+        self.action_mcat_readiness = QAction("Readiness...", self)
         self.action_mcat_readiness.setMenuRole(QAction.MenuRole.NoRole)
-        m.menuTools.addAction(self.action_mcat_readiness)
+        self.menu_mcat.addAction(self.action_mcat_readiness)
         qconnect(self.action_mcat_readiness.triggered, self.on_mcat_readiness)
 
-        # MCAT coverage map
-        self.action_mcat_coverage = QAction("MCAT Coverage...", self)
+        self.action_mcat_coverage = QAction("Coverage...", self)
         self.action_mcat_coverage.setMenuRole(QAction.MenuRole.NoRole)
-        m.menuTools.addAction(self.action_mcat_coverage)
+        self.menu_mcat.addAction(self.action_mcat_coverage)
         qconnect(self.action_mcat_coverage.triggered, self.on_mcat_coverage)
 
-        # MCAT Focus Weak Topics (points-at-stake read-out)
         self.action_mcat_weak = QAction("Focus Weak Topics...", self)
         self.action_mcat_weak.setMenuRole(QAction.MenuRole.NoRole)
-        m.menuTools.addAction(self.action_mcat_weak)
+        self.menu_mcat.addAction(self.action_mcat_weak)
         qconnect(self.action_mcat_weak.triggered, self.on_mcat_weak_topics)
 
-        # MCAT Speedrun Library (browse + import curated decks)
-        self.action_mcat_library = QAction("MCAT Library...", self)
+        self.menu_mcat.addSeparator()
+
+        self.action_mcat_library = QAction("Library...", self)
         self.action_mcat_library.setMenuRole(QAction.MenuRole.NoRole)
-        m.menuTools.addAction(self.action_mcat_library)
+        self.menu_mcat.addAction(self.action_mcat_library)
         qconnect(self.action_mcat_library.triggered, self.on_mcat_library)
 
         # View
